@@ -4,8 +4,8 @@
 
 ```
 JDK 11
-Spring Boot 2.7.2
-apache-tomcat-8.5.78
+Spring Boot 2.7.8
+Gradle
 git
 ```
 
