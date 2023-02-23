@@ -1,0 +1,26 @@
+docker network create --gateway 172.25.0.1 --subnet 172.25.0.0/16 ecommerce-network
+
+docker build -t study-config:1.0 .
+
+docker run -d -p 8888:8888 --network ecommerce-network --name study-config study-config:1.0
+
+docker build -t study-eureka:1.0 .
+
+docker run -d -p 8761:8761 --network ecommerce-network --name study-eureka study-eureka:1.0
+
+docker build -t study-gateway:1.0 .
+
+docker run -d -p 8000:8000 -e "eureka.client.serviceUrl.defaultZone=http://study-eureka:8761/eureka/" --network ecommerce-network --name study-gateway study-gateway:1.0
+
+docker build -t study-demo:1.0 .
+
+docker run -d -p 4001:4001 -e "spring.config.import=optional:configserver:http://study-config:8888" -e "eureka.client.serviceUrl.defaultZone=http://study-eureka:8761/eureka/" -e "spring.profiles.active=study" --network ecommerce-network --name study-demo study-demo:1.0
+
+docker build -t study-test:1.0 .
+
+docker run -d -p 4002:4002 -e "spring.config.import=optional:configserver:http://study-config:8888" -e "eureka.client.serviceUrl.defaultZone=http://study-eureka:8761/eureka/" -e "spring.profiles.active=study" --network ecommerce-network --name study-test study-test:1.0
+
+
+쿠버네티스 - Domain 기반이다.
+
+전체적인 흐름 -> eureka confuse 에러 

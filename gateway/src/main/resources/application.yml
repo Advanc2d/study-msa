@@ -1,0 +1,29 @@
+server:
+  port: 8000
+
+eureka:
+  instance:
+    instance-id: gateway-microservice-instance # eureka에 등록되는 id 값
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: demo
+          uri: lb://DEMO # uri: http://localhost:4001 # 포워딩할 주소, http://localhost:8000/demo 로 들어오면 http://localhost:4001 로 포워딩
+          predicates:
+            - Path=/demo/** # 해당 gateway 서버의 /demo/**로 들어오는 요은 demo로 인식하겠다는 조건
+
+        - id: test
+          uri: lb://TEST # uri: http://localhost:4002 # 포워딩 할 주소, http://localhost:8000/test 로 들어오면 http://localhost:4002 로 포워딩
+          predicates:
+            - Path=/test/** # 해당 gateway 서버의 /test/**로 들어오는 요은 test로 인식하겠다는 조건
+
+            
